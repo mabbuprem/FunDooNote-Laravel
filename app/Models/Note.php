@@ -74,5 +74,18 @@ class Note extends Model  implements JWTSubject
 
 
 }
+
+
+public static function getSearchedNote($searchKey, $currentUser){
+    $usernotes = Note::leftJoin('lablesnotes', 'lablesnotes.note_id', '=', 'notes.id')
+    ->leftJoin('lables', 'lables.id', '=', 'lablesnotes.label_id')
+    ->select('notes.id', 'notes.title', 'notes.description', 'lables.label_name')
+    ->where('notes.user_id', '=', $currentUser->id)->Where('notes.title', 'like', '%' . $searchKey . '%')
+    ->orWhere('notes.user_id', '=', $currentUser->id)->Where('notes.description', 'like', '%' . $searchKey . '%')
+    ->orWhere('notes.user_id', '=', $currentUser->id)->Where('lables.label_name', 'like', '%' . $searchKey . '%')
+    ->get();
+
+    return $usernotes;
+}
 }
 

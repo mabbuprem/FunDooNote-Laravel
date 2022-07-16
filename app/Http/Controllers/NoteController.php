@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Lable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Models\Note;
+use App\Models\LableNotes;
 use Illuminate\Support\Facades\Log;
 use App\Exceptions\FundooNoteException;
 class NoteController extends Controller
@@ -25,11 +26,7 @@ class NoteController extends Controller
      *               required={"title","description"},
      *               @OA\Property(property="title", type="string"),
      *               @OA\Property(property="description", type="string"),
-     *               @OA\Property(property="label_id"),  
-     *               @OA\Property(property="pin"),  
-     *               @OA\Property(property="archive"),  
-     *               @OA\Property(property="colour"),
-     *               @OA\Property(property="collaborator_email")         
+     *                   
      *            ),
      *        ),
      *    ),
@@ -345,6 +342,83 @@ class NoteController extends Controller
         }
     }
 
+    public function searchNotes(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'search' => 'required|string'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors()->toJson(), 400);
+            }
+
+            $searchKey = $request->input('search');
+            $currentUser = JWTAuth::parseToken()->authenticate();
+
+            if ($currentUser) {
+                $usernotes = Note::getSearchedNote($searchKey, $currentUser);
+
+                if ($usernotes == '[]') {
+                    return response()->json([
+                        'message' => 'Notes Not Found'
+                    ], 404);
+                }
+                return response()->json([
+                    'message' => 'Fetched Notes Successfully',
+                    'notes' => $usernotes
+                ], 200);
+            }
+            Log::error('Invalid Authorization Token');
+            throw new FundooNoteException('Invalid Authorization Token', 401);
+        } catch (FundooNoteException $exception) {
+            return response()->json([
+                'message' => $exception->message()
+            ], $exception->statusCode());
+        }
+    }
+
+    public function addNoteLabel(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+
+            'note_id' => 'required',
+            'label_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $user = JWTAuth::parseToken()->authenticate();
+        if (!$user) {
+            return response()->json([
+                'status' => 401,
+                'message' => 'Invalid authorization token'
+            ], 401);
+        }
+
+        $labelnote = LableNotes::where('note_id', $request->note_id)->where('label_id', $request->label_id)->first();
+        if ($labelnote) {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Note Already have a label'
+            ], 409);
+        }
+
+        //$notelabel = LabelNotes::createNoteLabel($request, $user->id);
+        $labelnotes = LableNotes::create([
+            'user_id' => $user->id,
+            'note_id' => $request->note_id,
+            'label_id' => $request->label_id
+        ]);
+        log::info('Label created Successfully');
+        return response()->json([
+            'status' => 200,
+            'message' => 'Label and note added Successfully',
+            'notelabel' => $labelnotes,
+        ]);
+    }
     
 
     

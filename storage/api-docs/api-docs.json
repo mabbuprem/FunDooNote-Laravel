@@ -5,6 +5,195 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/createlabel": {
+            "post": {
+                "summary": "create label",
+                "description": "create label",
+                "operationId": "0605a13b036bfd1ed187ac2eff866df1",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "label_name"
+                                ],
+                                "properties": {
+                                    "label_name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "label created Sucessfully"
+                    },
+                    "401": {
+                        "description": "Invalid token"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/getLableById": {
+            "post": {
+                "summary": "Read Label",
+                "description": " Read Label ",
+                "operationId": "5fc8591d6307e838bd17c65dcd6ce4c6",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "id"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "label found Sucessfully"
+                    },
+                    "404": {
+                        "description": "label not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/getAllLabel": {
+            "get": {
+                "summary": "read labels",
+                "description": "user read labels",
+                "operationId": "0d7719aec5e3eb90be24a9c48e837328",
+                "requestBody": {},
+                "responses": {
+                    "201": {
+                        "description": "labels shown suucessfully"
+                    },
+                    "401": {
+                        "description": "No label created by this user"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/updateLabelById": {
+            "post": {
+                "summary": "update label",
+                "description": "update user label",
+                "operationId": "caf842567e4f993a6bdf8c55295361ee",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "Updated_name",
+                                    "id"
+                                ],
+                                "properties": {
+                                    "Updated_name": {
+                                        "type": "string"
+                                    },
+                                    "id": {}
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Label successfully updated"
+                    },
+                    "402": {
+                        "description": "labels not found"
+                    },
+                    "401": {
+                        "description": "Invalid authorization token"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/deleteLabelById": {
+            "delete": {
+                "summary": "delete label",
+                "description": "delete user label",
+                "operationId": "d556e9f0510f786246dea52e038bf303",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "id"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "label successfully deleted"
+                    },
+                    "404": {
+                        "description": "labels not found"
+                    },
+                    "401": {
+                        "description": "Invalid authorization token"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/createnote": {
             "post": {
                 "summary": "create note",
@@ -24,12 +213,7 @@
                                     },
                                     "description": {
                                         "type": "string"
-                                    },
-                                    "label_id": {},
-                                    "pin": {},
-                                    "archive": {},
-                                    "colour": {},
-                                    "collaborator_email": {}
+                                    }
                                 },
                                 "type": "object"
                             }

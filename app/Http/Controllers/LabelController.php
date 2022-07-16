@@ -12,6 +12,35 @@ use Illuminate\Support\Facades\Cache;
 
 class LabelController extends Controller
 {
+
+
+     /**
+     * @OA\Post(
+     *   path="/api/createlabel",
+     *   summary="create label",
+     *   description="create label",
+     *   @OA\RequestBody(
+     *         @OA\JsonContent(),
+     *         @OA\MediaType(
+     *            mediaType="multipart/form-data",
+     *            @OA\Schema(
+     *               type="object",
+     *               required={"label_name"},
+     *               @OA\Property(property="label_name", type="string"),          
+     *            ),
+     *        ),
+     *    ),
+     *   @OA\Response(response=200, description="label created Sucessfully"),
+     *   @OA\Response(response=401, description="Invalid token"),
+     * security={
+     *       {"Bearer": {}}
+     *     }
+     * )
+     * Create Label.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+
     public function createLabel(Request $request)
     {
         try {
@@ -46,6 +75,35 @@ class LabelController extends Controller
             ], $exception->statusCode());
         }
     }
+
+
+
+
+    /**
+     * @OA\Post(
+     *   path="/api/getLableById",
+     *   summary="Read Label",
+     *   description=" Read Label ",
+     *   @OA\RequestBody(
+     *         @OA\JsonContent(),
+     *         @OA\MediaType(
+     *            mediaType="multipart/form-data",
+     *            @OA\Schema(
+     *               type="object",
+     *               required={"id"},
+     *               @OA\Property(property="id", type="integer"),
+     *            ),
+     *        ),
+     *    ),
+     *   @OA\Response(response=201, description="label found Sucessfully"),
+     *   @OA\Response(response=404, description="label not Found"),
+     *   security={
+     *       {"Bearer": {}}
+     *     }
+     * )
+     * Read label by id
+     * @return \Illuminate\Http\JsonResponse
+     */
 
     function getLableById(Request $request)
     {
@@ -84,6 +142,25 @@ class LabelController extends Controller
     }
 
 
+
+    /**
+     *   @OA\Get(
+     *   path="/api/getAllLabel",
+     *   summary="read labels",
+     *   description="user read labels",
+     *   @OA\RequestBody(
+     *    ),
+     *   @OA\Response(response=201, description="labels shown suucessfully"),
+     *   @OA\Response(response=401, description="No label created by this user"),
+     *   security={
+     *       {"Bearer": {}}
+     *     }
+     * )
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+
+
     public function getAllLabel(Request $request)
     {
         try {
@@ -112,6 +189,34 @@ class LabelController extends Controller
             ], $exception->statusCode());
         }
     }
+
+    /**
+     *   @OA\Post(
+     *   path="/api/updateLabelById",
+     *   summary="update label",
+     *   description="update user label",
+     *   @OA\RequestBody(
+     *         @OA\JsonContent(),
+     *         @OA\MediaType(
+     *            mediaType="multipart/form-data",
+     *            @OA\Schema(
+     *               type="object",
+     *               required={"Updated_name","id"},
+     *               @OA\Property(property="Updated_name", type="string"),
+     *               @OA\Property(property="id"),
+     *            ),
+     *        ),
+     *    ),
+     *   @OA\Response(response=200, description="Label successfully updated"),
+     *   @OA\Response(response=402, description="labels not found"),
+     *   @OA\Response(response=401, description="Invalid authorization token"),
+     *   security={
+     *       {"Bearer": {}}
+     *     }
+     * )
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
 
 
     public function updateLabelById(Request $request)
@@ -164,6 +269,35 @@ class LabelController extends Controller
             ], $exception->statusCode());
          }
     }
+
+
+    /**
+     *   @OA\Delete(
+     *   path="/api/deleteLabelById",
+     *   summary="delete label",
+     *   description="delete user label",
+     *   @OA\RequestBody(
+     *         @OA\JsonContent(),
+     *         @OA\MediaType(
+     *            mediaType="multipart/form-data",
+     *            @OA\Schema(
+     *               type="object",
+     *               required={"id"},
+     *               @OA\Property(property="id", type="integer"),
+     *            ),
+     *        ),
+     *    ),
+     *   @OA\Response(response=200, description="label successfully deleted"),
+     *   @OA\Response(response=404, description="labels not found"),
+     *   @OA\Response(response=401, description="Invalid authorization token"),
+     *   security={
+     *       {"Bearer": {}}
+     *     }
+     * )
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+
 
     function deleteLabelById(Request $request)
     {
