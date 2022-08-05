@@ -391,6 +391,221 @@
                 ]
             }
         },
+        "/api/archivenote": {
+            "post": {
+                "summary": "Archive Note",
+                "description": " Archive Note ",
+                "operationId": "3a389483d7488b623f13e9d46b6556ef",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "id"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Note Archived Sucessfully"
+                    },
+                    "404": {
+                        "description": "Notes not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/unarchivenote": {
+            "post": {
+                "summary": "Unarchive Note",
+                "description": " Unarchive Note ",
+                "operationId": "31f2c01a66288f7bf3e9d21a2902ba8e",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "id"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Note Unarchived Sucessfully"
+                    },
+                    "404": {
+                        "description": "Notes not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/colournote": {
+            "post": {
+                "summary": "Colour Note",
+                "description": " Colour Note ",
+                "operationId": "c2f82466d9d753a4b31ed2a17eee8dbf",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "id",
+                                    "colour"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "colour": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Note coloured Sucessfully"
+                    },
+                    "404": {
+                        "description": "Notes not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/pinnote": {
+            "post": {
+                "summary": "pin note label",
+                "description": "Pining note label",
+                "operationId": "46f27108355881a4538877dcca46fb5b",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "id"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Pinned note successfully "
+                    },
+                    "402": {
+                        "description": "Note not found"
+                    },
+                    "401": {
+                        "description": "Invalid authorization token"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/getallpinnednotes": {
+            "get": {
+                "summary": "Display All Pinned Notes",
+                "description": " Display All Pinned Notes",
+                "operationId": "e350af41be53a4d9eca46f2c6ea9547d",
+                "requestBody": {},
+                "responses": {
+                    "404": {
+                        "description": "Notes Not Found"
+                    },
+                    "401": {
+                        "description": "Invalid Authorization Token"
+                    },
+                    "200": {
+                        "description": "Fetched All Pinned Notes Successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/getallarchivednotes": {
+            "get": {
+                "summary": "Display All Archived Notes",
+                "description": " Display All Archived Notes",
+                "operationId": "57622e9faa10dbda9240031d79011e8b",
+                "requestBody": {},
+                "responses": {
+                    "404": {
+                        "description": "Notes Not Found"
+                    },
+                    "401": {
+                        "description": "Invalid Authorization Token"
+                    },
+                    "200": {
+                        "description": "Fetched All Archived Notes Successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/register": {
             "post": {
                 "summary": "register",

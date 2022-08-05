@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Exceptions\FundooNoteException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 class UserController extends Controller
 {
 
@@ -71,18 +73,27 @@ class UserController extends Controller
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
             ]);
+            Cache::remember('users', 3600, function () {
+                return DB::table('users')->get();  });
+           // $userName=User::getFirstNameAttribute($user);
 
             $token = JWTAuth::attempt($credentials);
 
-            $data = array('name' => "$user->firstname;", "VerificationLink" => $token);
+            $data = array('name' => $user->firstname, "VerificationLink" => $token,
+            "email"=>$request->email,
+            "fromMail"=>env('MAIL_USERNAME'),
+            "fromName"=>env('APP_NAME'),
+            );
+            
 
             // Mail::send('verifyEmail', $data, function ($message) {
-            //     $message->to(env('MAIL_USERNAME'), 'name')->subject('verify Email');
             //     $message->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
+            //     $message->to(env('MAIL_USERNAME'))->subject('verify Email');
             // });
-            Mail::send('verifyEmail', $data, function ($message) {
-                $message->to('mabbupremkumar@gmail.com', 'Prem')->subject('Verify Email');
-                $message->from('mabbupremkumar@gmail.com', 'Laravel');
+            Mail::send('verifyEmail', $data, function ($message) use($data){
+        
+                $message->to($data['email'],$data['name'])->subject('Verify Email');
+                $message->from('mabbupremkumar@gmail.com','Premkumar');
             });
 
 
@@ -306,17 +317,18 @@ class UserController extends Controller
         } else {
 
             $token = JWTAuth::fromUser($user);
-            $data = array('name' => "$user->firstname;", "resetlink" => $token);
-
-            // Mail::send('mail', $data, function ($message) {
-            //     $message->to(env('MAIL_USERNAME'), 'name')->subject('Reset Password');
-            //     $message->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
-            // });
-
-            Mail::send('mail', $data, function($message) {
-                $message->to('mabbupremkumar@gmail.com', 'prem')->subject('Reset Password');
-                $message->from('mabbupremkumar@gmail.com','Laravel');
-             });
+            $token = JWTAuth::fromUser($user);
+            $data = array('name' => $user->firstname, "resetlink" => 'http://localhost:8080/resetPassword/'. $token,
+            "email"=>$request->email,
+            "fromMail"=>env('MAIL_USERNAME'),
+            "fromName"=>env('APP_NAME'),
+            );
+            
+            Mail::send('mail', $data, function ($message) use($data){
+                $message->to($data['email'],$data['name'])->subject('Reset Password');
+                $message->from('mabbupremkumar@gmail.com','Prem');
+            });
+           
             return response()->json([
                 'message' => 'Reset link Sent to your Email',
             ], 201);

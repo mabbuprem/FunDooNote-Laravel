@@ -11,6 +11,6 @@
 <h1>Hi, {{ $name }}</h1>
 <p>Verify your Email<p>
 <a href=>{{ $VerificationLink }} </a>
-<p>Sending Mail from Deepak.</p>
+<p>Sending Mail from Prem.</p>
 </body>
 </html>

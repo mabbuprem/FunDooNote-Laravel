@@ -12,18 +12,10 @@ class ExampleTest extends TestCase
      *
      * @return void
      */
-    public function successfulRegistrationTest()
+    public function testBasicTest()
     {
-        $response = $this->withHeaders([
-            'Content-Type' => 'Application/json',
-        ])
-            ->json('POST', '/api/register', [
-                "firstname" => "prem",
-                "lastname" => "kumar",
-                "email" => "mabbupremkumar@gmail.com",
-                "password" => "Prem335@",
-                "password_confirmation" => "Prem335@"
-            ]);
-        $response->assertStatus(201)->assertJson(['message' => 'User successfully registered']);
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
     }
 }

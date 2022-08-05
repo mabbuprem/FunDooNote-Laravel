@@ -36,6 +36,7 @@ class LableNotes extends Model
      */
     public static function getLabelNotesbyLabelIdNoteIdandUserId($label_id, $note_id, $user_id){
         $labelnote = LableNotes::where('note_id', $note_id)->where('label_id', $label_id)->where('user_id', $user_id)->first();
+        
         return $labelnote;
     }
 

@@ -14,6 +14,7 @@ class Note extends Model  implements JWTSubject
         'title',
         'description',
         'user_id',
+        
     ];
 
     protected $hidden = [
@@ -66,7 +67,9 @@ class Note extends Model  implements JWTSubject
     public static function getAllNotes($user)
     {
         $notes = User::leftjoin('notes','notes.user_id', '=', 'users.id')
-        ->select('users.id','notes.id', 'notes.title', 'notes.description')
+        ->leftJoin('lablesnotes', 'lablesnotes.label_id', '=', 'notes.id')
+         ->leftJoin('lables', 'lables.id', '=', 'lablesnotes.label_id')
+        ->select('users.id','notes.id', 'notes.title', 'notes.description','notes.pin', 'notes.archive', 'notes.colour','lables.label_name' )
         ->where([['notes.user_id', '=', $user->id]])
         ->get();
 
@@ -79,7 +82,7 @@ class Note extends Model  implements JWTSubject
 public static function getSearchedNote($searchKey, $currentUser){
     $usernotes = Note::leftJoin('lablesnotes', 'lablesnotes.note_id', '=', 'notes.id')
     ->leftJoin('lables', 'lables.id', '=', 'lablesnotes.label_id')
-    ->select('notes.id', 'notes.title', 'notes.description', 'lables.label_name')
+    ->select('users.id', 'notes.id', 'notes.title', 'notes.description', 'lables.label_name')
     ->where('notes.user_id', '=', $currentUser->id)->Where('notes.title', 'like', '%' . $searchKey . '%')
     ->orWhere('notes.user_id', '=', $currentUser->id)->Where('notes.description', 'like', '%' . $searchKey . '%')
     ->orWhere('notes.user_id', '=', $currentUser->id)->Where('lables.label_name', 'like', '%' . $searchKey . '%')
@@ -87,5 +90,26 @@ public static function getSearchedNote($searchKey, $currentUser){
 
     return $usernotes;
 }
+
+public static function getArchivedNotesandItsLabels($user)
+{
+    $notes = Note::leftJoin('lablesnotes', 'lablesnotes.note_id', '=', 'notes.id')
+        ->leftJoin('lables', 'lables.id', '=', 'lablesnotes.label_id')
+        ->select('notes.id', 'notes.title', 'notes.description', 'notes.pin', 'notes.archive', 'notes.colour', 'lables.label_name')
+        ->where([['notes.user_id', '=', $user->id], ['archive', '=', 1]])->get();
+
+    return $notes;
+}
+
+public static function getPinnedNotesandItsLabels($user)
+{
+    $notes = Note::leftJoin('lablesnotes', 'lablesnotes.note_id', '=', 'notes.id')
+        ->leftJoin('lables', 'lables.id', '=', 'lablesnotes.label_id')
+        ->select('notes.id', 'notes.title', 'notes.description', 'notes.pin', 'notes.archive', 'notes.colour', 'lables.label_name')
+        ->where([['notes.user_id', '=', $user->id], ['pin', '=', 1]])->get();
+
+    return $notes;
+}
+
 }
 
