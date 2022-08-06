@@ -111,5 +111,17 @@ public static function getPinnedNotesandItsLabels($user)
     return $notes;
 }
 
+
+public static function getTrashedNotesandItsLabels($user)
+    {
+        $notes = Note::leftJoin('lablesnotes', 'lablesnotes.note_id', '=', 'notes.id')
+            ->leftJoin('lables', 'lables.id', '=', 'lablesnotes.note_id')
+            ->select('notes.id', 'notes.title', 'notes.description', 'notes.pin', 'notes.archive', 'notes.colour', 'lables.label_name')
+            ->where([['notes.user_id', '=', $user->id],['archive', '=', 0], ['pin', '=', 0], ['isTrashed', '=', 1]]) ->get();
+
+        return $notes;
+    }
+
+
 }
 

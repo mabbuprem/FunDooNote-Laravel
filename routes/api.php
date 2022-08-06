@@ -52,6 +52,10 @@ Route::post('colournote',[NoteController::class,'colourNoteById']);
 Route::get('getallpinnednotes',[NoteController::class,'getAllPinnedNotes']);
 Route::get('getallarchivednotes',[NoteController::class,'getAllArchivedNotes']);
 
+Route::post('trashNoteById', [NoteController::class, 'trashNoteById']);
+Route::post('restoreNoteById', [NoteController::class, 'restoreNoteById']);
+Route::get('getAllTrashedNotes', [NoteController::class, 'getAllTrashedNotes']);
+
 Route::post('createLabel', [LabelController::class, 'createLabel']);
 Route::get('getLableById', [LabelController::class, 'getLableById']);
 Route::get('getAllLabel', [LabelController::class, 'getAllLabel']);

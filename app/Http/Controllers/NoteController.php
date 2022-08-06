@@ -905,6 +905,122 @@ class NoteController extends Controller
         }
     }
 
-    
-    
+
+    function trashNoteById(Request $request)
+    {
+        try {
+
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors()->toJson(), 400);
+            }
+
+            $noteObject = new Note();
+            $currentUser = JWTAuth::authenticate($request->id);
+            $note = $noteObject->noteId($request->id);
+
+            if (!$note) {
+                Log::error('Notes Not Found', ['user' => $currentUser, 'id' => $request->id]);
+                throw new FundooNoteException('Notes Not Found', 404);
+            }
+
+            if ($note->isTrashed == 0) {
+                // if ($note->isPinned == 1) {
+                //     $note->isPinned = 0;
+                //     $note->save();
+                    
+                // }
+                if ($note->isArchived == 1) {
+                    $note->isArchived = 0;
+                    $note->save();
+                }
+                
+                $note->isTrashed = 1;
+                $note->save();
+
+                log::info('Note Trashed successfully');
+                return response()->json([
+                    'message' => 'Note Trashed Successfully',
+                ], 201);
+            }
+        } catch (FundooNoteException $exception) {
+            return response()->json([
+                'message' => $exception->message()
+            ], $exception->statusCode());
+        }
+    }
+
+    function restoreNoteById(Request $request)
+    {
+        try {
+
+            $validator = Validator::make($request->all(), [
+                'id' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors()->toJson(), 400);
+            }
+
+            $noteObject = new Note();
+            $currentUser = JWTAuth::parseToken()->authenticate();
+            $note = $noteObject->noteId($request->id);
+
+            if (!$note) {
+                Log::error('Notes Not Found', ['user' => $currentUser, 'id' => $request->id],);
+                return response()->json([
+                    'message' => 'Note not found'
+                ], 401);
+            }
+
+            if ($note->isTrashed == 1) {
+                $note->isTrashed = 0;
+                $note->save();
+
+                Log::info('note restored', ['user_id' => $currentUser, 'note_id' => $request->id]);
+                return response()->json([
+                    'status' => 201,
+                    'message' => 'Note restored Sucessfully'
+                ], 201);
+            }
+        } catch (FundooNoteException $exception) {
+            return response()->json([
+                'message' => $exception->message()
+            ], $exception->statusCode());
+        }
+    }
+
+
+    function getAllTrashedNotes()
+    {
+        try {
+            $currentUser = JWTAuth::parseToken()->authenticate();
+            if (!$currentUser) {
+                Log::error('Invalid Authorization Token');
+                throw new FundooNoteException('Invalid Authorization Token', 401);
+            } else {
+                $userNotes = Note::getTrashedNotesandItsLabels($currentUser);
+                if (!$userNotes) {
+                    Log::error('Notes Not Found For User:: ' . $currentUser->id);
+                    throw new FundooNoteException('Notes Not Found', 404);
+                }
+
+
+                return response()->json([
+                    'message' => 'Fetched All Trashed Notes Successfully',
+                    'notes' => $userNotes
+                ], 200);
+            }
+        } catch (FundooNoteException $exception) {
+            return response()->json([
+                'message' => $exception->message()
+            ], $exception->statusCode());
+        }
+    }
 }
+
+    
+    
